@@ -1,4 +1,5 @@
 //una promise permite ejecutar un trabajo sincrono o asinc y despues de resolverse, ejecutar una tarea particular
+//sriven para evitar el 'callback heaven'
 let empleados=[{
     id:1,
     nombre: 'Jonathan'
@@ -42,6 +43,7 @@ let getSalario=(empleado)=>{
         }
     });
 }
+
  getEmpleado(10).then(empleado=>{ //encadenar promises
      return getSalario(empleado);
  })

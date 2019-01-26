@@ -1,4 +1,4 @@
-## Ejemplo de servidor expres, hbs, heroku
+## Ejemplo de servidor express, hbs, heroku
 ```
     npm install
 ```
