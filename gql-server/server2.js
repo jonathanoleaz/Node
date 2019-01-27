@@ -3,12 +3,14 @@ var express_graphql = require('express-graphql');
 var { buildSchema } = require('graphql');
 
 // Se define el esquema de GraphQL con sus queries, mutaciones y objetos que puede devolver
+//mutaciones para modificar 
+//queries: para devolver datos
 var schema = buildSchema(`
-    type Query {
+    type Query {        
         course(id: Int!): Course
         courses(topic: String): [Course]
     },
-    type Mutation {
+    type Mutation {     
         updateCourseTopic(id: Int!, topic: String!): Course
     }
     type Course {
@@ -77,6 +79,7 @@ var updateCourseTopic = function({id, topic}) {
 var root = {
     course: getCourse,
     courses: getCourses,
+    coursesPaginados: getCourses,
     updateCourseTopic: updateCourseTopic
 };
 
@@ -89,3 +92,71 @@ app.use('/endpointGraphQL', express_graphql({
 }));
 
 app.listen(4000, () => console.log('Express GraphQL Server Now Running On localhost:4000/graphql'));
+
+
+/** 
+ ::::::::::::::::::::Ejemplos de como mandar la petición:::::::::::::::
+ %  Cambiar el tema de un curso dado el id %
+            mutation updateCourseTopic($id: Int!, $topic: String!) {
+            updateCourseTopic(id: $id, topic: $topic) {
+                ...courseFields
+            }
+            }
+
+            fragment courseFields on Course {
+            author
+            description
+            topic
+            url
+            }
+
+        % Variables de la query%
+            {
+            "id": 1,
+            "topic": "JavaScript"
+            }
+
+% Mas de una consulta%
+            query getCourseWithFragments($courseID1: Int!, $courseID2: Int!) {
+                course1: course(id: $courseID1) {
+                        ...courseFields
+                },
+                course2: course(id: $courseID2) {
+                        ...courseFields
+                } 
+            }
+
+            fragment courseFields on Course 
+            {
+                title
+                author
+                description
+                topic
+                url
+            }
+        % Variables de la query%
+            {
+                "courseID1":1,
+                "courseID2":2
+            }
+
+% Consulta de id y title de todos los cursos%
+            {courses{
+                id,
+                title
+                }
+            }
+
+% Consulta de algunos atributos de curso dado su id%
+            query getSingleCourse($courseID: Int!) {
+                course(id: $courseID) {
+                    title
+                    author
+                }
+            }
+        % Variables de la query%
+            {
+                "courseID":3
+            }
+
+ */
